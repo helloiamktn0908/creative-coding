@@ -2,8 +2,10 @@ import * as fs from "fs";
 import { resolve } from "path";
 import { defineConfig } from "vite";
 
+const FOLDER_NAME = "work";
+
 const root = resolve(__dirname, "src");
-const pages = resolve(__dirname, "src", "pages");
+const pages = resolve(__dirname, "src", FOLDER_NAME);
 const outDir = resolve(__dirname, "dist");
 
 // 各ページのディレクトリ名のリストを取得
@@ -11,7 +13,7 @@ const pageDirNameList = fs.readdirSync(pages);
 
 // rollupOptions用のコンフィグを作成
 const pageConfig = pageDirNameList.reduce((arr, pageName) => {
-  arr[pageName] = resolve(root, "pages", pageName, "index.html");
+  arr[pageName] = resolve(root, FOLDER_NAME, pageName, "index.html");
   return arr;
 }, {});
 
@@ -19,7 +21,7 @@ const pageConfig = pageDirNameList.reduce((arr, pageName) => {
 const pageListHtml = pageDirNameList
   .map(
     (pageName) =>
-      `<li><a href="./pages/${pageName}/index.html">${pageName}</a></li>`
+      `<li><a href="./${FOLDER_NAME}/${pageName}/">${pageName}</a></li>`
   )
   .join("");
 
@@ -50,4 +52,5 @@ export default defineConfig({
     },
   },
   plugins: [htmlPlugin()],
+  assetsInclude: ["**/*.hdr"],
 });
