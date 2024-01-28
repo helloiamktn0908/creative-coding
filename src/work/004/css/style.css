@@ -11,7 +11,7 @@
 body {
   margin: 0;
   --color-text: #858fe7;
-  --color-bg: #0e0e0e;
+  --color-bg: #656357;
   --color-link: #fff;
   --color-link-hover: #858fe7;
   color: var(--color-text);
@@ -83,6 +83,7 @@ a:focus-visible {
   width: min(70vmin, 450px);
   height: min(70vmin, 450px);
   border-radius: 50%;
+  border: black 2px solid;
   background-size: cover;
   background-position: 50% 50%;
 }
