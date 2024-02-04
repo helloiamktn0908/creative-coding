@@ -9,12 +9,15 @@
     "preview": "vite preview"
   },
   "devDependencies": {
+    "@types/p5": "^1.7.6",
     "@types/three": "^0.160.0",
     "lil-gui": "^0.19.1",
     "typescript": "^5.2.2",
     "vite": "^5.0.12"
   },
   "dependencies": {
+    "p5": "^1.9.0",
+    "simplex-noise": "^4.0.1",
     "three": "^0.160.0"
   }
 }
