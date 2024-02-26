@@ -1,60 +1,66 @@
-import "./globals";
-import "p5/lib/addons/p5.sound";
 import p5 from "p5";
 
-let song: p5.SoundFile;
-let analyzer: p5.Amplitude;
-let circles: {
-  x: number;
-  y: number;
-  radius: number;
-  color: string;
-}[] = [];
-
-const color = ["rgb(148, 255, 47)", "rgb(83, 83, 83)", "#ffffff"];
-
 const sketch = (p: p5) => {
-  p.setup = () => {
-    p.createCanvas(p.windowWidth, p.windowHeight);
-    song = p.loadSound("./assets/4SB.wav");
-    // create a new Amplitude analyzer
-    analyzer = new p5.Amplitude();
-    // Patch the input to an volume analyzer
-    analyzer.setInput(song);
+  let img: p5.Element;
+  let count = 0;
+  const arc_width = 35;
+  const ellipse_width = arc_width * 0.3;
+  const arc_stroke_weight = 3;
+  const canvas_responsive_boundary = 1000;
+  const canvas_size_ratio =
+    p.windowWidth < canvas_responsive_boundary ? 0.8 : 0.32;
+  const canvas_width = p.windowWidth * canvas_size_ratio;
+  const canvas_height = p.windowWidth * canvas_size_ratio;
 
-    for (let i = 0; i < 200; i++) {
-      circles.push({
-        x: p.random(p.width),
-        y: p.random(p.height),
-        radius: p.random(50, 200),
-        color: color[i % 3],
-      });
-    }
+  p.preload = () => {
+    img = p.createImg("assets/img.png", "hand");
+    img.style("bottom", `${(p.windowHeight - canvas_height) / 2 + 40}px`);
+    img.style("right", `${(p.windowWidth - canvas_width) / 2 - 60}px`);
   };
 
-  p.mousePressed = () => {
-    if (song.isPlaying()) {
-      song.stop();
-    } else {
-      song.play();
-      song.loop();
-    }
+  p.setup = () => {
+    p.createCanvas(canvas_width, canvas_height);
+    p.frameRate(7);
+    img.style("width", `${p.width * 0.5}px`);
   };
 
   p.draw = () => {
-    p.background("#969696");
-    // Get the average (root mean square) amplitude
-    let rms = analyzer.getLevel();
+    p.background("#9fa4ff");
+    for (let i = 0; i <= p.windowWidth; i += arc_width) {
+      for (let j = 0; j <= p.windowHeight; j += arc_width) {
+        count = count + p.floor(p.random(4));
 
-    for (let circle of circles) {
-      p.fill(circle.color);
-      p.stroke(0);
-      p.ellipse(
-        circle.x,
-        circle.y,
-        rms ? circle.radius + rms * p.random(circle.radius, 400) : circle.radius
-      );
+        p.noFill();
+        p.strokeWeight(arc_stroke_weight);
+        if (count % 4 === 0 || count % 4 === 1) {
+          p.stroke("#ffe1e1");
+          p.arc(i, j, arc_width, arc_width, p.PI / 2, p.PI);
+          p.noStroke();
+          p.fill("#ff2626");
+          p.ellipse(i, j, ellipse_width);
+        } else if (count % 4 === 2 || count % 4 === 3) {
+          p.stroke("#ffe1e1");
+          p.arc(i, j, arc_width, arc_width, p.PI + p.PI / 2, p.TWO_PI);
+          p.noStroke();
+          p.fill("#ffe1e1");
+          p.ellipse(i, j, ellipse_width);
+        }
+      }
     }
+  };
+
+  p.windowResized = () => {
+    const canvas_size_ratio =
+      p.windowWidth < canvas_responsive_boundary ? 0.8 : 0.32;
+    const canvas_width = p.windowWidth * canvas_size_ratio;
+    const canvas_height = p.windowWidth * canvas_size_ratio;
+    p.resizeCanvas(
+      p.windowWidth * canvas_size_ratio,
+      p.windowWidth * canvas_size_ratio
+    );
+    img.style("bottom", `${(p.windowHeight - canvas_height) / 2 + 40}px`);
+    img.style("right", `${(p.windowWidth - canvas_width) / 2 - 60}px`);
+    img.style("width", `${p.width * 0.5}px`);
   };
 };
 

@@ -1,43 +1,62 @@
 import p5 from "p5";
 
 const sketch = (p: p5) => {
-  const ellipse_width = 100;
-  let count = 0;
+  const canvas_width = window.innerWidth;
+  const canvas_height = window.innerHeight;
+  let coefficient = 0.5;
+  let isHoge = false;
+  let img1: p5.Image;
+  let img2: p5.Image;
+  let img3: p5.Image;
+  let img4: p5.Image;
+  let hoge = 5;
+
+  p.preload = () => {
+    img1 = p.loadImage("assets/people.png");
+    img2 = p.loadImage("assets/01.jpg");
+    img3 = p.loadImage("assets/hand.png");
+    // img3 = p.loadImage("assets/diamond.png");
+  };
 
   p.setup = () => {
-    p.pixelDensity(4);
-    p.createCanvas(p.windowWidth, p.windowHeight);
-    p.frameRate(7);
+    p.createCanvas(canvas_width, canvas_height);
+    p.frameRate(9);
   };
 
   p.draw = () => {
-    p.background("#14855E");
-    p.stroke("#ffb5f0");
-    p.strokeWeight(20);
-    p.noFill();
-    for (let i = 0; i <= p.windowWidth; i += ellipse_width) {
-      for (let j = 0; j <= p.windowHeight; j += ellipse_width) {
-        count = count + p.floor(p.random(4));
-
-        if (count % 4 === 0) {
-          // 下から左
-          p.arc(i, j, ellipse_width, ellipse_width, p.PI / 2, p.PI);
-        } else if (count % 4 === 1) {
-          // 左から上
-          p.arc(i, j, ellipse_width, ellipse_width, p.PI, p.PI + p.PI / 2);
-        } else if (count % 4 === 2) {
-          // 上から右
-          p.arc(i, j, ellipse_width, ellipse_width, p.PI + p.PI / 2, p.TWO_PI);
-        } else if (count % 4 === 3) {
-          // 右から下
-          p.arc(i, j, ellipse_width, ellipse_width, p.TWO_PI, p.PI / 2);
-        }
+    let rect_width = canvas_height / hoge;
+    for (
+      let i = 0;
+      i <= canvas_width;
+      i += rect_width, isHoge ? (rect_width *= 2) : (rect_width *= coefficient)
+    ) {
+      if (rect_width < 1) {
+        isHoge = true;
+      } else if (rect_width >= canvas_height / hoge) {
+        isHoge = false;
+      }
+      for (let j = 0; j <= canvas_width; j += rect_width * 0.9) {
+        const img = p.random([img1, img2, img3]);
+        p.image(
+          img,
+          i,
+          j,
+          rect_width,
+          rect_width,
+          0,
+          0,
+          img.width,
+          img.height,
+          p.COVER
+        );
       }
     }
+    hoge = p.random(1.2, 5);
   };
 
   p.windowResized = () => {
-    p.resizeCanvas(p.windowWidth, p.windowHeight);
+    p.createCanvas(p.windowWidth, p.windowHeight);
+    // coefficient =
   };
 };
 
